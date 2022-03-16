@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/app.js -e js,hbs"
+    "dev": "nodemon src/app.js -e js,hbs",
+    "data": "/Users/fleur/mongodb/bin/mongod.exe --dbpath=/Users/fleur/mongodb-data"
   },
   "keywords": [],
   "author": "",

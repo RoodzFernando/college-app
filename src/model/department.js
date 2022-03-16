@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Faculty = require('./faculty')
 
 const deptSchema = new mongoose.Schema({
     name: {
@@ -10,13 +11,7 @@ const deptSchema = new mongoose.Schema({
       type: String,
       length: [1-5000],
     },
-    faculty :  new mongoose.Schema({
-      name: {
-      type: String,
-      length: [1-500],
-      required: true
-    }
-  }),
+    faculty :  Faculty
 });
 
 const department = mongoose.model('Department', deptSchema);
