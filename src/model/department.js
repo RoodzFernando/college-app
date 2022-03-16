@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-const Faculty = require('./faculty')
+const FacultySchema = require('./faculty')
+const Joi = require('joi');
+const print = require('../../utils')
 
 const deptSchema = new mongoose.Schema({
     name: {
@@ -9,11 +11,39 @@ const deptSchema = new mongoose.Schema({
     },
     description: {
       type: String,
-      length: [1-5000],
+      length: [5-5000],
     },
-    faculty :  Faculty
+    faculty :  FacultySchema
 });
+
+const validateDepartment = (department) => {
+  const schema = Joi.object({
+     name: Joi.string().min(1).max(500).required(),
+     description: Joi.string().min(5).max(5000),
+    }
+  )
+  return schema.validate(department)
+
+}
 
 const department = mongoose.model('Department', deptSchema);
 
+const createDept = async () => {
+  const chemistry = new department({
+    name: 'Chemistry',
+    description: 'Chemistry Department',
+    faculty: {
+      name: 'Sciences'
+    }
+  })
+  validateDepartment(chemistry);
+  print(chemistry);
+  const res = await chemistry.save();
+  print(res);
+}
+
+createDept();
+
+
 module.exports = department;
+module.exports = validateDepartment;
