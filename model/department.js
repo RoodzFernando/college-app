@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const FacultySchema = require('./faculty')
+// const FacultySchema = require('./faculty')
 const Joi = require('joi');
-const print = require('../../utils')
-const Faculty = require('./faculty');
+// const print = require('../../utils')
+const {Faculty, FacultySchema} = require('./faculty');
 const { string } = require('joi');
 
 const deptSchema = new mongoose.Schema({
@@ -15,9 +15,7 @@ const deptSchema = new mongoose.Schema({
       type: String,
       length: [5-5000],
     },
-    faculty: new FacultySchema({
-      name: {type: string, required: true},
-    })
+    faculty: FacultySchema
 });
 
 const validateDepartment = (department) => {
@@ -55,5 +53,6 @@ const createDept = async () => {
 module.exports = {
   department,
   validateDepartment,
-  createDept
+  createDept,
+  deptSchema
 }

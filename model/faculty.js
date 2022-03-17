@@ -9,5 +9,8 @@ const FacultySchema = new mongoose.Schema({
 })
 const Faculty = mongoose.model('Faculty', FacultySchema)
 
-exports.FacultySchema = FacultySchema
-module.exports = Faculty
+// exports.FacultySchema = FacultySchema
+module.exports = {
+  Faculty,
+  FacultySchema
+}
