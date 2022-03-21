@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-const {
-  FacultySchema
-} = require('./faculty');
+// const FacultySchema = require('./faculty');
 
 const deptSchema = new mongoose.Schema({
   name: {
@@ -16,12 +14,16 @@ const deptSchema = new mongoose.Schema({
     maxlength: 500
   },
   faculty: {
-    type: FacultySchema,
-    required: true
+    type: String,
+    // required: true
   }
+  // faculty: {
+  //   type: FacultySchema,
+  //   required: true
+  // }
 });
 
 
 const Department = mongoose.model('Department', deptSchema);
 
-module.exports = Department
+module.exports = {Department, deptSchema}

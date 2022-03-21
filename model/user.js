@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const {deptSchema} = require('./department');
+const {deptSchema} = require('../model/department');
 
 
 const userSchema = new mongoose.Schema({
@@ -17,10 +17,10 @@ const userSchema = new mongoose.Schema({
     },
     date_started: {
       type: Date,
-      required: true
+      default: Date.now()
     },
     dept: {
-      type: deptSchema,
+      type: String,
       required: true
     },
     role: {

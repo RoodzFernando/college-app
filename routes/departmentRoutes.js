@@ -2,16 +2,16 @@ const express = require('express')
 
 const route = express.Router()
 
-// Create Faculty
+// Create Department
 route.post('/', (req, res) => {
 
 })
-// Show Faculties
+// Show Departments
 
-// Show a Faculty
+// Show a Department
 
-// Update a Faculty
+// Update a Department
 
-// Delete a Faculty
+// Delete a Department
 
 module.exports = route
