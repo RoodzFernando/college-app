@@ -5,12 +5,14 @@ const {deptSchema} = require('./department');
 const userSchema = new mongoose.Schema({
     firstName: {
       type: String,
-      length: [1, 50],
+      minlength: 1,
+      maxlength: 50,
       required: true
     },
     lastName: {
       type: String,
-      length: [1, 50],
+      minlength: 1,
+      maxlength: 50,
       required: true
     },
     date_started: {
