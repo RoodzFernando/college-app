@@ -1,15 +1,17 @@
 const express = require('express');
-const User = require('../model/user');
+const {User, validate} = require('../model/user');
 const { Department } = require('../model/department');
 const route = express.Router();
 const print = require('../utils');
-const validate = require('../model/user')
+
 
 // Create User
 route.post('/', async (req, res) => {
-  const { dept } = req.body;
+  const { dept, email } = req.body;
   const { error } = validate(req.body)
-  if (error) return res.status(400).send(error.details[0].messages)
+  if (error) return res.status(400).send({message: error.details[0].message})
+  const isUnique = await User.findOne({email})
+  if (isUnique) return res.status(500).send({message: 'Email is already taken!'})
 
     try {
       const deptObj = await Department.findOne({ name: dept });
@@ -20,6 +22,7 @@ route.post('/', async (req, res) => {
       await user.save();
       res.status(201).send(user);
     } catch (error) {
+      console.log(error);
       res.status(400).send(error);
     }
 
@@ -30,6 +33,7 @@ route.get('/', async (req, res) => {
     const users = await User.find();
     res.send(users);
   } catch (error) {
+
     res.status(400).send(error);
   }
 });
@@ -49,8 +53,11 @@ route.get('/:id', async (req, res) => {
 // Update a User
 
 route.patch('/:id', async (req, res) => {
+  const updates = Object.keys(req.body)
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {new: true})
+    const user = await User.findById(req.params.id)
+    updates.forEach(field => user[field] = req.body[field])
+    await user.save()
     res.send(user)
   } catch (error) {
     res.status(400).send(error)

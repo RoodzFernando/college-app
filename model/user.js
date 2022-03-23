@@ -1,16 +1,18 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 const { deptSchema } = require('../model/department');
+const bcrypt = require('bcryptjs')
+const salt = bcrypt.genSaltSync(10)
+
 const validate = user => {
-  const schema = Joi.Schema({
-    schema: Joi.object({
+  const schema = Joi.object({
       firstName: Joi.string().min(1).max(50).required(),
       lastName: Joi.string().min(1).max(50).required(),
-      email: Joi.string().email().unique().required(),
+      email: Joi.string().email().required(),
+      password: Joi.string().min(6).required(),
       date_started: Joi.date(),
       role: Joi.string().required(),
-      dept: Joi.string().required
-    })
+      dept: Joi.string().required()
   })
   return schema.validate(user)
 }
@@ -31,6 +33,11 @@ const userSchema = new mongoose.Schema({
       message: props => `${props.value} is not a valid email!`
     },
     required: [true, 'Email is required']
+  },
+  password: {
+    type: String,
+    minlength: 6,
+    required: true
   },
   lastName: {
     type: String,
@@ -53,7 +60,15 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+userSchema.pre('save', function () {
+  const user = this
+  user.password = bcrypt.hashSync(user.password, salt)
+  console.log(user.password)
+})
+
 const User = mongoose.model('User', userSchema);
 
-module.exports = User;
-module.exports = validate
+module.exports ={
+  User,
+  validate
+}
