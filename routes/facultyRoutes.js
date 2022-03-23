@@ -1,11 +1,22 @@
-const express = require('express')
+const express = require('express');
+const { Faculty } = require('../model/faculty');
 
-const route = express.Router()
+const route = express.Router();
 
 // Create Faculty
-route.post('/', (req, res) => {
+route.post('/', async (req, res) => {
+  try {
+    const faculty = new Faculty({
+      ...req.body,
+    });
+    await faculty.save();
+    res.send(faculty);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+});
 
-})
 // Show Faculties
 
 // Show a Faculty
@@ -14,4 +25,4 @@ route.post('/', (req, res) => {
 
 // Delete a Faculty
 
-module.exports = route
+module.exports = route;
