@@ -3,22 +3,26 @@ const User = require('../model/user');
 const { Department } = require('../model/department');
 const route = express.Router();
 const print = require('../utils');
+const validate = require('../model/user')
 
 // Create User
 route.post('/', async (req, res) => {
-  const { firstName, lastName, date_started, dept, role } = req.body;
+  const { dept } = req.body;
+  const { error } = validate(req.body)
+  if (error) return res.status(400).send(error.details[0].messages)
 
-  try {
-    const deptObj = await Department.findOne({ name: dept });
-    const user = new User({
-      ...req.body,
-      dept: deptObj,
-    });
-    await user.save();
-    res.status(201).send(user);
-  } catch (error) {
-    res.status(400).send(error);
-  }
+    try {
+      const deptObj = await Department.findOne({ name: dept });
+      const user = new User({
+        ...req.body,
+        dept: deptObj,
+      });
+      await user.save();
+      res.status(201).send(user);
+    } catch (error) {
+      res.status(400).send(error);
+    }
+
 });
 // Show Users
 route.get('/', async (req, res) => {
@@ -62,6 +66,12 @@ route.delete('/:id', async (req, res) => {
   } catch (error) {
     res.status(400).send(error)
   }
+})
+
+// Authenticating a User
+
+route.post('/auth', (req, res) => {
+
 })
 
 module.exports = route;
