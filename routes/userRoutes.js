@@ -4,6 +4,8 @@ const { Department } = require('../model/department');
 const route = express.Router();
 const print = require('../utils');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const secret = process.env.SECRETKEY;
 
 // Create User
 route.post('/', async (req, res) => {
@@ -80,11 +82,17 @@ route.post('/auth', async (req, res) => {
   try {
     const email = req.body.email;
     const validUser = await User.findOne({ email });
-    print(validUser);
     if (!validUser) throw new Error();
-    const loggedIn = bcrypt.compare(req.body.password, validUser.password);
+    const loggedIn = await bcrypt.compare(
+      req.body.password,
+      validUser.password
+    );
     if (!loggedIn) throw new Error();
-    res.send({ message: 'Login Successful' });
+    const token = jwt.sign({ id: validUser._id }, secret);
+    res.send({
+      message: 'Login Successful',
+      token,
+    });
   } catch (error) {
     res.status(400).send({ message: 'Invalid credentials' });
   }
