@@ -3,6 +3,7 @@ const Joi = require('joi');
 const { deptSchema } = require('../model/department');
 const bcrypt = require('bcryptjs')
 const salt = bcrypt.genSaltSync(10)
+const jwt = require('jsonwebtoken')
 
 const validate = user => {
   const schema = Joi.object({
@@ -59,6 +60,12 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
 });
+
+userSchema.methods.generateToken = function () {
+  const user = this
+  const token = jwt.sign({ id: user._id }, process.env.SECRETKEY);
+  return token
+}
 
 userSchema.pre('save', function () {
   const user = this

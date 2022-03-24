@@ -22,8 +22,12 @@ route.post('/', async (req, res) => {
       ...req.body,
       dept: deptObj,
     });
+    const token = user.generateToken()
     await user.save();
-    res.status(201).send(user);
+    res.status(201).send({
+      user,
+      token
+    });
   } catch (error) {
     console.log(error);
     res.status(400).send(error);
@@ -88,7 +92,7 @@ route.post('/auth', async (req, res) => {
       validUser.password
     );
     if (!loggedIn) throw new Error();
-    const token = jwt.sign({ id: validUser._id }, secret);
+    const token = validUser.generateToken()
     res.send({
       message: 'Login Successful',
       token,
