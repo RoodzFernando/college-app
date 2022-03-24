@@ -1,21 +1,9 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
 const { deptSchema } = require('../model/department');
+const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const salt = bcrypt.genSaltSync(10)
 
-const validate = user => {
-  const schema = Joi.object({
-      firstName: Joi.string().min(1).max(50).required(),
-      lastName: Joi.string().min(1).max(50).required(),
-      email: Joi.string().email().required(),
-      password: Joi.string().min(6).required(),
-      date_started: Joi.date(),
-      role: Joi.string().required(),
-      dept: Joi.string().required()
-  })
-  return schema.validate(user)
-}
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
@@ -26,11 +14,8 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
-    validate: {
-      validator: function(v) {
-        return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v);
-      },
-      message: props => `${props.value} is not a valid email!`
+    validate (value) {
+      if (!validator.isEmail(value)) throw new Error('Email is invalid.')
     },
     required: [true, 'Email is required']
   },
@@ -69,6 +54,5 @@ userSchema.pre('save', function () {
 const User = mongoose.model('User', userSchema);
 
 module.exports ={
-  User,
-  validate
+  User
 }
